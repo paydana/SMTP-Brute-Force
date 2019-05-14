@@ -1,9 +1,8 @@
  #!usr/bin/python
 # -*- coding: utf-8 -*-
 import smtplib
-import sys
+import time
 import argparse as arg
-import os
 import threading
 
 def banner():
