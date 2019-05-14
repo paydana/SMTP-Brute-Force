@@ -4,7 +4,6 @@ Brute force SMTP
 
 Require<br>
 import smtplib<br>
-import sys<br>
+import time<br>
 import argparse as arg<br>
-import os<br>
 import threading
