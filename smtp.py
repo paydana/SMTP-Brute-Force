@@ -1,7 +1,6 @@
  #!usr/bin/python
 # -*- coding: utf-8 -*-
 import smtplib
-import time
 import sys
 import argparse as arg
 import os
