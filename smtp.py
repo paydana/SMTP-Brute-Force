@@ -69,7 +69,6 @@ def iniciar():
     for i in wordlist:
       time.sleep(0.4)
       thread.start_new_thread(brute, (i,))
-      thread.start_new_thread(brute, (i,))
     print("\n\n\t[{} INFO] Fim do teste, obrigado por usar by B4l0x...\n").format(tempo)
     thread.exit()
   except KeyboardInterrupt:
